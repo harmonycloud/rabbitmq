@@ -1,0 +1,264 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareBaseline
+metadata:
+  name: rabbitmq-operator-highly-available
+  annotations:
+    OperationType: Create
+    developerPass: rabbitmq
+    baselineName: "高可用模式"
+    description: "高可用模式基线,支持多节点集群部署,具备故障转移能力,适用于生产环境,提供高可靠性和可扩展性."
+spec:
+  gvks:
+    - name: v1alpha1
+      group: "rabbitmq.middleware.hc.cn"
+      version: "v1alpha1"
+      kind: "RabbitmqCluster"
+  globe:
+    repository: "10.10.101.172:443"
+    project: "middleware"
+    resource:
+      limits:
+        cpu: "500m"
+        memory: "500Mi"
+      requests:
+        cpu: "100m"
+        memory: "250Mi"
+  preActions:
+    - name: pre-rabbitmq-operator-affinity
+      parameters:
+        podAntiAffinityTopologKey: "kubernetes.io/hostname"
+        podAntiAffinity: "soft"
+        nodeAffinity: { }
+      exposed: true
+    - name: pre-rabbitmq-operator-tolerations
+      parameters:
+        tolerations: [ ]
+      exposed: true
+  permissionScope: "Cluster"
+  permissions:
+    - serviceAccountName: "{{ .Globe.Name }}-rabbitmq-operator"
+      rules:
+        - apiGroups:
+            - apiextensions.k8s.io
+          resources:
+            - customresourcedefinitions
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+        - apiGroups:
+            - ""
+          resources:
+            - endpoints
+            - configmaps
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+        - apiGroups:
+            - apps
+          resources:
+            - statefulsets
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+        - apiGroups:
+            - ""
+          resources:
+            - services
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+        - apiGroups:
+            - apps
+          resources:
+            - controllerrevisions
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+        - apiGroups:
+            - ""
+          resources:
+            - events
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+        - apiGroups:
+            - ""
+          resources:
+            - pods
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+        - apiGroups:
+            - rabbitmq.middleware.hc.cn
+          resources:
+            - rabbitmqclusters
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+        - apiGroups:
+            - ""
+          resources:
+            - pods/exec
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+        - apiGroups:
+            - ""
+          resources:
+            - nodes
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+        - apiGroups:
+            - rabbitmq.middleware.hc.cn
+          resources:
+            - rabbitmqclusters/status
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+        - apiGroups:
+            - apps
+          resources:
+            - deployments
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+        - apiGroups:
+            - coordination.k8s.io
+          resources:
+            - leases
+          verbs:
+            - get
+            - list
+            - patch
+            - update
+            - watch
+            - create
+  deployment:
+    spec:
+      replicas: 3
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: rabbitmq-operator
+          app.kubernetes.io/instance: "{{ .Globe.Name }}"
+      template:
+        metadata:
+        labels:
+          middleware: rabbitmq-operator
+          app.kubernetes.io/name: rabbitmq-operator
+          app.kubernetes.io/instance: "{{ .Globe.Name }}"
+        spec:
+          containers:
+            - name: rabbitmq-operator
+              securityContext:
+              image: "{{ .Globe.repository }}/rabbitmq-operator:v1.1.0"
+              imagePullPolicy: IfNotPresent
+              command:
+                - /manager
+                - --leader-elect=true
+              ports:
+                - name: http
+                  containerPort: 9443
+                  protocol: TCP
+              livenessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /healthz
+                  port: 8081
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 5
+                successThreshold: 1
+                timeoutSeconds: 5
+              readinessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /healthz
+                  port: 8081
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 5
+                successThreshold: 1
+                timeoutSeconds: 5
+              resources:
+                limits:
+                  cpu: '"{{ .Globe.resource.limits.cpu }}"'
+                  memory: '"{{ .Globe.resource.limits.memory }}"'
+                requests:
+                  cpu: '"{{ .Globe.resource.requests.cpu }}"'
+                  memory: '"{{ .Globe.resource.requests.memory }}"'
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - preference:
+                    matchExpressions:
+                      - key: system
+                        operator: In
+                        values:
+                          - "true"
+                  weight: 100
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 100
+                  podAffinityTerm:
+                    topologyKey: "kubernetes.io/hostname"
+                    labelSelector:
+                      matchExpressions:
+                        - key: middleware
+                          operator: In
+                          values:
+                            - "{{ .Globe.Name }}"
+          tolerations:
+          serviceAccount: "{{ .Globe.Name }}-rabbitmq-operator"
+  configurations:
+    - name: "crd-rabbitmqcluster"
+      values: { }
+    - name: "rabbitmq-operator-dashboard"
+      values: { }

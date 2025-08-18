@@ -1,0 +1,43 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareConfiguration
+metadata:
+  name: rabbitmq-alertrule
+spec:
+  template: |
+    apiVersion: monitoring.coreos.com/v1
+    kind: PrometheusRule
+    metadata:
+      labels:
+        prometheus: k8s
+        role: alert-rules
+      name: "{{ .Globe.Name }}"
+    spec:
+      groups:
+        - name: RabbitmqAlerts
+          rules:
+            - alert: RabbitmqPodNotReady
+              annotations:
+                alertLevel: warning
+                message: pod is not running or succeeded
+                product: harmonycloud
+                summary: pod is not running or succeeded
+              expr: count(rabbitmq_identity_info)by(service)!={{ .Values.replicas }}
+              for: 3s
+              labels:
+                severity: warning
+                {{- with .Values.labels }}
+                {{- toYaml . | nindent 12 }}
+                {{- end }}
+            - alert: RabbitmqMessageAccumulation
+              annotations:
+                alertLevel: warning
+                message: messages accumulated in queue
+                product: harmonycloud
+                summary: messages accumulated in queue
+              expr: sum(rabbitmq_queue_messages_ready) by(service) > 100000
+              for: 3s
+              labels:
+                severity: warning
+                {{- with .Values.labels }}
+                {{- toYaml . | nindent 12 }}
+                {{- end }}

@@ -1,0 +1,17 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareConfiguration
+metadata:
+  name: rabbitmq-role
+spec:
+  template: |
+    kind: Role
+    apiVersion: rbac.authorization.k8s.io/v1
+    metadata:
+      name: "{{ .Globe.Name }}-rabbitmq-peer-discovery-rbac"
+    rules:
+      - apiGroups: [""]
+        resources: ["endpoints"]
+        verbs: ["get"]
+      - apiGroups: [""]
+        resources: ["events"]
+        verbs: ["create"]

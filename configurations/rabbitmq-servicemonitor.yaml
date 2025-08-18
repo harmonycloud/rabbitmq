@@ -1,0 +1,27 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareConfiguration
+metadata:
+  name: rabbitmq-servicemonitor
+spec:
+  template: |
+    apiVersion: monitoring.coreos.com/v1
+    kind: ServiceMonitor
+    metadata:
+      generation: 1
+      labels:
+        app: "{{ .Globe.Name }}-broker-monitor"
+      name: "{{ .Globe.Name }}-broker-monitor"
+    spec:
+      endpoints:
+        - interval: 30s
+          port: prometheus
+          scheme: http
+          relabelings:
+          - replacement: rabbitmq
+            targetLabel: middleware
+          - sourceLabels: [service]
+            replacement: "{{ .Globe.Name }}"
+            targetLabel: service
+      selector:
+        matchLabels:
+          rabbitmq: "{{ .Globe.Name }}-prometheus-svc"

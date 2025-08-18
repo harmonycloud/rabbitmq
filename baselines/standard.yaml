@@ -1,0 +1,126 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareBaseline
+metadata:
+  name: rabbitmq-standard
+  annotations:
+    baselineName: "标准版"
+    description: "标准版基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
+spec:
+  operatorBaseline:
+    name: rabbitmq-operator-standard
+    gvkName: v1alpha1
+  necessary:
+    repository: ""
+    resource:
+      rabbitmq:
+        limits:
+          cpu: ""
+          memory: ""
+        requests:
+          cpu: ""
+          memory: ""
+        volume:
+          size: ""
+          storageClass: ""
+        replicas: 1
+    version: "3.12.7"
+  preActions:
+    - name: pre-rabbitmq-alertrule-labels
+      parameters:
+        labels: {}
+      exposed: false
+    - name: pre-rabbitmq-logging
+      parameters:
+        fileLogging: true
+        stdoutLogging: true
+      exposed: true
+    - name: pre-rabbitmq-affinity
+      parameters:
+        podAntiAffinityTopologKey: "kubernetes.io/hostname"
+        podAntiAffinity: "soft"
+        nodeAffinity: { }
+      exposed: true
+    - name: pre-rabbitmq-tolerations
+      parameters:
+        tolerations: [ ]
+      exposed: true
+  parameters:
+    statefulsetComponent:
+      broker:
+        spec:
+          template:
+            metadata:
+            spec:
+              initContainers:
+                - name: init
+                  volumeMounts:
+                    - mountPath: /opt/log
+                      name: rabbitmq-log-volume
+              containers:
+                - name: rabbitmq
+                  volumeMounts:
+                    - mountPath: /var/log/rabbitmq
+                      name: rabbitmq-log-volume
+                  env:
+                    - name: TZ
+                      value: Asia/Shanghai
+    brokerImage: "{{ .Necessary.repository }}/rabbitmq:3.12.7-management"
+    replicas: "{{ .Necessary.resource.rabbitmq.replicas }}"
+    brokerCmNm: "{{ .Globe.Name }}-rabbitmq-config"
+    initImage: "{{ .Necessary.repository }}/rabbitmq-init:v1.0.0"
+    hostNetwork: false
+    requests:
+      cpu: '"{{ .Necessary.resource.rabbitmq.requests.cpu }}"'
+      memory: '"{{ .Necessary.resource.rabbitmq.requests.memory }}"'
+    limits:
+      cpu: '"{{ .Necessary.resource.rabbitmq.limits.cpu }}"'
+      memory: '"{{ .Necessary.resource.rabbitmq.limits.memory }}"'
+    volumeClaimTemplates:
+      - metadata:
+          creationTimestamp: null
+          name: rabbitmq-data-volume
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          dataSource: null
+          resources:
+            requests:
+              storage: "{{ .Necessary.resource.rabbitmq.volume.size }}"
+          storageClassName: "{{ .Necessary.resource.rabbitmq.volume.storageClass }}"
+      - metadata:
+          creationTimestamp: null
+          name: rabbitmq-log-volume
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          dataSource: null
+          resources:
+            requests:
+              storage: 2Gi
+          storageClassName: "{{ .Necessary.resource.rabbitmq.volume.storageClass }}"
+  configurations:
+    - name: rabbitmq-alertrule
+      values:
+        replicas: "{{ .Necessary.resource.rabbitmq.replicas }}"
+    - name: rabbitmq-config
+      values:
+        args:
+          clusterPartitionHandling: "pause_minority"
+          vmMemoryHighWatermarkRelative: "0.4"
+          defaultUser: "guest"
+          defaultPassword: "guest"
+          diskFreeLimitAbsolute: "2G"
+          logLevel: "info"
+          logRotationSize: "104857600"
+          logRotationCount: "15"
+        resources:
+          requests:
+            memory: '"{{ .Necessary.resource.rabbitmq.requests.memory }}"'
+    - name: rabbitmq-serviceaccount
+      values: {}
+    - name: rabbitmq-role
+      values: {}
+    - name: rabbitmq-rolebinding
+      values: {}
+    - name: rabbitmq-servicemonitor
+      values: {}

@@ -1,0 +1,11 @@
+name: RabbitMQ # 中间件类型
+version: 1.1.0-1.0.0 # 包版本
+app:
+  version: # 中间件支持版本
+    - 3.12.7
+  # deprecatedVersion: # 过期版本
+  #   - v1
+owner: harmonycloud # 供应商
+type: mq # 类型
+chartType: RabbitMQ
+description: RabbitMQ消息队列 # 描述
