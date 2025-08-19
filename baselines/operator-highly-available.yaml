@@ -198,7 +198,7 @@ spec:
           containers:
             - name: rabbitmq-operator
               securityContext:
-              image: "{{ .Globe.repository }}/rabbitmq-operator:v1.1.0"
+              image: '{{ if ne .Globe.repository "" }}{{ .Globe.repository }}/{{ end }}{{ .Globe.project }}/rabbitmq-operator:v1.1.0'
               imagePullPolicy: IfNotPresent
               command:
                 - /manager
