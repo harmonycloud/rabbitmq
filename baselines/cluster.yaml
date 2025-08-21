@@ -1,10 +1,10 @@
 apiVersion: middleware.cn/v1
 kind: MiddlewareBaseline
 metadata:
-  name: rabbitmq-standard
+  name: rabbitmq-cluster
   annotations:
-    baselineName: "标准版"
-    description: "标准版基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
+    baselineName: "集群版"
+    description: "集群版基线,支持多节点集群部署,具备故障转移能力,适用于生产环境,提供高可靠性和可扩展性."
 spec:
   operatorBaseline:
     name: rabbitmq-operator-standard
