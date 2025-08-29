@@ -1,10 +1,8 @@
 apiVersion: middleware.cn/v1
-kind: MiddlewareBaseline
+kind: MiddlewareOperatorBaseline
 metadata:
   name: rabbitmq-operator-highly-available
   annotations:
-    OperationType: Create
-    developerPass: rabbitmq
     baselineName: "高可用模式"
     description: "高可用模式基线,支持多节点集群部署,具备故障转移能力,适用于生产环境,提供高可靠性和可扩展性."
 spec:
