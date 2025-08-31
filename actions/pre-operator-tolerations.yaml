@@ -1,7 +1,7 @@
 apiVersion: middleware.cn/v1
 kind: MiddlewareActionBaseline
 metadata:
-  name: pre-pgsql-operator-tolerations
+  name: pre-rabbitmq-operator-tolerations
 spec:
   baselineType: "PreAction"
   actionType: "tolerations"
