@@ -5,7 +5,7 @@ metadata:
   annotations:
     baselineName: "集群版"
     description: "集群版基线,支持多节点集群部署,具备故障转移能力,适用于生产环境,提供高可靠性和可扩展性."
-    active: "true"
+    active: "2"
 spec:
   operatorBaseline:
     name: rabbitmq-operator-standard
