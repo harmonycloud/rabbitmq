@@ -188,10 +188,10 @@ spec:
           app.kubernetes.io/instance: "{{ .Globe.Name }}"
       template:
         metadata:
-        labels:
-          middleware: "{{ .Globe.Name }}"
-          app.kubernetes.io/name: rabbitmq-operator
-          app.kubernetes.io/instance: "{{ .Globe.Name }}"
+          labels:
+            middleware: "{{ .Globe.Name }}"
+            app.kubernetes.io/name: rabbitmq-operator
+            app.kubernetes.io/instance: "{{ .Globe.Name }}"
         spec:
           containers:
             - name: rabbitmq-operator
