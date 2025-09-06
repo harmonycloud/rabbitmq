@@ -8,4 +8,4 @@ app:
 owner: harmonycloud # 供应商
 type: mq # 类型
 chartType: RabbitMQ
-description: RabbitMQ消息队列 # 描述
+description: RabbitMQ 消息队列 # 描述
