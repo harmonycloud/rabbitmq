@@ -1,0 +1,41 @@
+middlewareDefinition: rabbitmq-cluster-active
+values:
+  - name: rabbitmq
+    path: spec|configurations|rabbitmq-config|values|args
+    parameters:
+      - clusterPartitionHandling:
+          - name: default
+            value: pause_minority
+          - name: isReboot
+            value: y
+          - name: range
+            value: [ pause_minority|autoheal|pause_if_all_down|ignore ]
+          - name: describe
+            value: "rabbitmq网络分区策略"
+      - logLevel:
+          - name: default
+            value: info
+          - name: isReboot
+            value: y
+          - name: range
+            value: [ info|debug ]
+          - name: describe
+            value: "日志级别"
+      - vmMemoryHighWatermark:
+          - name: default
+            value: 0.4
+          - name: isReboot
+            value: y
+          - name: range
+            value: [ 0-1.0 ]
+          - name: describe
+            value: "触发流控的内存阈值"
+      - diskFreeLimitAbsolute:
+          - name: default
+            value: 2G
+          - name: isReboot
+            value: y
+          - name: range
+            value: [ 0-10G ]
+          - name: describe
+            value: "触发流控的磁盘剩余量阈值"

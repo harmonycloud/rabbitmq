@@ -22,7 +22,7 @@ spec:
         volume:
           size: '{"type":"int","label":"存储大小","required":true,"description":"请输入存储大小","pattern":"^[1-9]\\d*$","placeholder":"请输入存储大小"}'
           storageClass: '{"type":"storageClass","label":"存储类","required":true,"description":"请选择存储","placeholder":"请选择存储"}'
-        replicas: '{"type":"int","label":"实例数","required":true,"description":"节点数量","default":1,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
+        replicas: '{"type":"int","label":"实例数","required":true,"description":"节点数量,请输入3以上的正数","default":3,"pattern":"^[3-9]\\d*$","placeholder":"请输入实例数"}'
     version: '{"type":"version","label":"版本","required":true,"default":"3.12.7"}'
   preActions:
     - name: pre-rabbitmq-alertrule-labels
