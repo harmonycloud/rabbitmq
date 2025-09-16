@@ -21,7 +21,7 @@ values:
             value: [ info|debug ]
           - name: describe
             value: "日志级别"
-      - vmMemoryHighWatermark:
+      - vmMemoryHighWatermarkRelative:
           - name: default
             value: 0.4
           - name: isReboot
