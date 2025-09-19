@@ -66,6 +66,9 @@ spec:
                       value: Asia/Shanghai
     brokerImage: "{{ .Necessary.repository }}/rabbitmq:3.12.7-management"
     replicas: "{{ .Necessary.resource.rabbitmq.replicas }}"
+    healthCheckUser:
+      user: "guest"
+      password: "Hc@Cloud01"
     brokerCmNm: "{{ .Globe.Name }}-rabbitmq-config"
     initImage: "{{ .Necessary.repository }}/rabbitmq-init:v1.0.0"
     hostNetwork: false

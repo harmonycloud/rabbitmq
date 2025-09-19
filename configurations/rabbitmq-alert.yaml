@@ -21,7 +21,7 @@ spec:
                 message: pod is not running or succeeded
                 product: harmonycloud
                 summary: pod is not running or succeeded
-              expr: count(rabbitmq_identity_info)by(service)!={{ .Values.replicas }}
+              expr: count(rabbitmq_identity_info{service='{{ .Globe.Name }}'})by(service)!={{ .Values.replicas }}
               for: 3s
               labels:
                 severity: warning
@@ -34,7 +34,7 @@ spec:
                 message: messages accumulated in queue
                 product: harmonycloud
                 summary: messages accumulated in queue
-              expr: sum(rabbitmq_queue_messages_ready) by(service) > 100000
+              expr: sum(rabbitmq_queue_messages_ready{service='{{ .Globe.Name }}'}) by(service) > 100000
               for: 3s
               labels:
                 severity: warning

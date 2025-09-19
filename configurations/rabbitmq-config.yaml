@@ -10,7 +10,7 @@ spec:
       name: "{{ .Globe.Name }}-rabbitmq-config"
     data:
       enabled_plugins: |
-        [rabbitmq_management,rabbitmq_prometheus,rabbitmq_peer_discovery_k8s].
+        [rabbitmq_management,rabbitmq_prometheus,rabbitmq_peer_discovery_k8s,rabbitmq_federation,rabbitmq_federation_management].
       rabbitmq.conf: |
         ## Cluster formation. See https://www.rabbitmq.com/cluster-formation.html to learn more.
         cluster_formation.peer_discovery_backend  = k8s
