@@ -3,7 +3,7 @@ kind: MiddlewareActionBaseline
 metadata:
   name: rabbitmq-restart
 spec:
-  baselineType: "NormalAction"
+  baselineType: "OpsAction"
   actionType: "restart"
   necessary:
   steps:
