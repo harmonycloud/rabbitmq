@@ -109,8 +109,8 @@ spec:
         args:
           clusterPartitionHandling: "pause_minority"
           vmMemoryHighWatermarkRelative: "0.4"
-          defaultUser: "guest"
-          defaultPassword: "guest"
+          defaultUser: '"{{ .Parameters.healthCheckUser.user }}"'
+          defaultPassword: '"{{ .Parameters.healthCheckUser.password }}"'
           diskFreeLimitAbsolute: "2G"
           logLevel: "info"
           logRotationSize: "104857600"
