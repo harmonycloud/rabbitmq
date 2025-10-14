@@ -3,7 +3,7 @@ kind: MiddlewareBaseline
 metadata:
   name: rabbitmq-cluster-active
   annotations:
-    baselineName: "集群版"
+    baselineName: "集群版-双活"
     description: "集群版基线,支持多节点集群部署,具备故障转移能力,适用于生产环境,提供高可靠性和可扩展性."
     active: "3"
 spec:
