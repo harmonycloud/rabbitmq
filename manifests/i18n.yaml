@@ -1,6 +1,8 @@
 baselineName:
   - name: "Cluster"
     name-zh: "集群版"
+  - name: "Cluster A-A"
+    name-zh: "集群版-双活"
 
 
   - name: "Standard"
