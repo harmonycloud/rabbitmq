@@ -11,7 +11,7 @@ values:
           - name: range
             value: [ pause_minority|autoheal|ignore ]
           - name: describe
-            value: "rabbitmq网络分区策略"
+            value: "rabbitmq network partition strategy"
       - logLevel:
           - name: default
             value: info
@@ -20,7 +20,7 @@ values:
           - name: range
             value: [ info|debug ]
           - name: describe
-            value: "日志级别"
+            value: "log level"
       - vmMemoryHighWatermarkRelative:
           - name: default
             value: 0.4
@@ -29,7 +29,7 @@ values:
           - name: range
             value: [ 0-1.0 ]
           - name: describe
-            value: "触发流控的内存阈值"
+            value: "memory threshold for triggering flow control"
       - diskFreeLimitAbsolute:
           - name: default
             value: 2G
@@ -38,4 +38,4 @@ values:
           - name: range
             value: [ 0-10G ]
           - name: describe
-            value: "触发流控的磁盘剩余量阈值"
+            value: "disk free space threshold for triggering flow control"
