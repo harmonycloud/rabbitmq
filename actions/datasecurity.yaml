@@ -5,6 +5,7 @@ metadata:
   annotations:
     alias: "datasecurity"
     grade: "ignore"
+    ignore: "true"
 spec:
   baselineType: "NormalAction"
   actionType: "datasecurity"
