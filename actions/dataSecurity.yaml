@@ -1,0 +1,12 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareActionBaseline
+metadata:
+  name: rabbitmq-datasecurity
+  annotations:
+    alias: "datasecurity"
+    grade: "ignore"
+spec:
+  baselineType: "NormalAction"
+  actionType: "datasecurity"
+  necessary:
+  steps:
