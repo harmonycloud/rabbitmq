@@ -59,11 +59,11 @@ placeholder:
   - name: "Please enter the number of instances"
     name-zh: "请输入实例数"
   - name: "Enter your admin password"
-    name-zh: "输入管理员账户密码"
+    name-zh: "请输入管理员账户密码"
 
 label:
-  - name: "AdminPassword"
-    name-zh: "管理员账号密码"
+  - name: "Administrator password"
+    name-zh: "管理员账户密码"
   - name: "Memory"
     name-zh: "内存"
   - name: "Replicas"
@@ -87,4 +87,3 @@ actionAliasName:
     name-zh: "自动切换"
   - name: "Middleware Restart"
     name-zh: "服务重启"
-
