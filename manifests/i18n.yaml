@@ -46,6 +46,9 @@ description:
     name-zh: "触发流控的内存阈值"
   - name: "disk free space threshold for triggering flow control"
     name-zh: "触发流控的磁盘剩余量阈值"
+  - name: "Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7)."
+    name-zh: "请输入大于等于 3 的奇数（如 3、5、7 个）的实例数"
+
 
 placeholder:
   - name: "Please enter a custom quota, the unit is `Gi`"
@@ -60,6 +63,9 @@ placeholder:
     name-zh: "请输入实例数"
   - name: "Enter your admin password"
     name-zh: "请输入管理员账户密码"
+  - name: "Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7)."
+    name-zh: "请输入大于等于 3 的奇数（如 3、5、7 个）的实例数"
+
 
 label:
   - name: "Administrator password"
