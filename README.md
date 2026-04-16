@@ -1,6 +1,6 @@
-[English](README.md) | [中文](README_zh.md)
-
 # RabbitMQ Message Broker Service
+
+**English** | [中文](README_zh.md)
 
 Enterprise-grade RabbitMQ message broker service for Kubernetes with high availability, flexible routing, and integrated management console.
 
