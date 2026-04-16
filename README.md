@@ -1,306 +1,221 @@
-# RabbitMQ
+# RabbitMQ Message Broker Service
 
-## 描述
+Enterprise-grade RabbitMQ message broker service for Kubernetes with high availability, flexible routing, and integrated management console.
 
-RabbitMQ 是一个开源的分布式消息队列中间件，实现了高级消息队列协议（AMQP）。本基线基于 RabbitMQ 构建，提供了企业级的消息传递解决方案，包括可靠的消息传递、灵活的路由、集群管理、监控告警等特性。RabbitMQ 支持多种消息传递模式，适用于微服务架构、事件驱动架构和分布式系统中的异步通信需求。
+## Overview
 
-## 功能
+RabbitMQ is an open-source distributed message broker that implements the Advanced Message Queuing Protocol (AMQP). This package delivers a production-ready RabbitMQ cluster on Kubernetes, featuring reliable message delivery, flexible routing, mirrored queues, and integrated monitoring. RabbitMQ supports multiple messaging patterns and is well suited for microservice architectures, event-driven architectures, and asynchronous communication in distributed systems.
 
-### 核心功能
-- **消息传递**: 支持可靠的消息传递机制
-- **多种协议**: 支持 AMQP、MQTT、STOMP 等协议
-- **灵活路由**: 支持多种交换机类型（Direct、Fanout、Topic、Headers）
-- **队列管理**: 支持持久化队列、延迟队列、死信队列
-- **消息确认**: 支持发布确认和消费确认
-- **流量控制**: 支持生产者和消费者流控
+## Features
 
-### 企业级特性
-- **集群管理**: 支持多节点集群部署
-- **高可用性**: 支持镜像队列和故障转移
-- **监控管理**: 集成 Web 管理界面
-- **权限控制**: 支持用户、虚拟主机和权限管理
-- **监控告警**: 集成 Prometheus 监控和告警
-- **日志管理**: 支持结构化日志输出和日志收集
+### Core Capabilities
+- **Reliable messaging**: Durable message delivery with publish and consume acknowledgments
+- **Multiple protocols**: AMQP, MQTT, STOMP protocol support
+- **Flexible routing**: Multiple exchange types (Direct, Fanout, Topic, Headers)
+- **Queue management**: Persistent queues, delayed queues, and dead-letter queues
+- **Message acknowledgment**: Publisher confirms and consumer acknowledgments
+- **Flow control**: Producer and consumer flow control mechanisms
 
-### 运维功能
-- **资源管理**: 支持 CPU 和内存资源限制
-- **节点亲和性**: 支持 Pod 反亲和性和节点亲和性配置
-- **容忍度配置**: 支持污点容忍度设置
-- **健康检查**: 内置健康检查和就绪探针
-- **指标导出**: 提供 Prometheus 格式的指标
-- **优雅停机**: 支持优雅停机机制
+### Advanced Features
+- **Cluster management**: Multi-node cluster deployment
+- **High availability**: Mirrored queues with automatic failover
+- **Management console**: Integrated web management interface
+- **Access control**: User, virtual host, and permission management
+- **Monitoring and alerting**: Integrated Prometheus metrics and alert rules
+- **Log management**: Structured logging output with log collection
 
-### 高级功能
-- **消息持久化**: 支持消息和队列持久化
-- **事务支持**: 支持消息事务
-- **消息优先级**: 支持消息优先级队列
-- **TTL 设置**: 支持消息和队列 TTL
-- **死信队列**: 支持死信消息处理
-- **延迟队列**: 支持延迟消息处理
+### Enterprise Features
+- **Message persistence**: Message and queue persistence
+- **Transaction support**: Message transactions
+- **Priority queues**: Message priority queue support
+- **TTL settings**: Message and queue TTL configuration
+- **Dead-letter queues**: Dead-letter message processing
+- **Delayed queues**: Delayed message delivery
 
-## 支持版本
+### Operations Features
+- **Resource management**: CPU and memory resource limits
+- **Node affinity**: Pod anti-affinity and node affinity configuration
+- **Tolerations**: Taint toleration settings
+- **Health checks**: Built-in liveness and readiness probes
+- **Metrics export**: Prometheus-format metrics
+- **Graceful shutdown**: Graceful shutdown mechanism
 
-### 中间件版本
-- **RabbitMQ 3.12.7**: 最新稳定版本，包含管理插件
+## Supported Versions
 
-### 基线版本
-- **包版本**: 1.1.0-1.0.0
-- **Operator 版本**: v1alpha1
+### RabbitMQ Releases
+- **3.12.7** (latest stable, includes management plugin)
 
-### 相关组件版本
-- **RabbitMQ Management**: 集成管理界面
+### Component Releases
+- **Package version**: 1.2.0-1.2.0
 - **RabbitMQ Init**: v1.0.0
 
-## 架构
+## Architecture
 
-### 部署模式
+### Deployment Modes
 
-#### 标准版 (operator-standard)
-- **副本数**: 1
-- **适用场景**: 开发测试环境、快速部署
-- **特点**: 资源占用少，部署简单
+#### 1. Operator Standard (operator-standard)
+- **Use cases**: Development, testing, and quick deployment
+- **Traits**: Single replica, minimal resource usage
+- **Topology**: 1 RabbitMQ instance
 
-#### 高可用版 (operator-highly-available)
-- **副本数**: 3
-- **适用场景**: 生产环境
-- **特点**: 高可用性，故障自动转移
+#### 2. Operator Highly Available (operator-highly-available)
+- **Use cases**: Production environments
+- **Traits**: Multi-replica with automatic failover
+- **Topology**: 3 RabbitMQ instances
 
-#### 集群版 (cluster)
-- **副本数**: 可配置（建议3个或以上）
-- **适用场景**: 生产环境、大规模消息处理
-- **特点**: 高可用、高性能、可扩展
+#### 3. Cluster (cluster)
+- **Use cases**: Production environments with large-scale message processing
+- **Traits**: High availability, high performance, horizontally scalable
+- **Topology**: 3+ instances (configurable)
 
-### 组件架构
+#### 4. Cluster Active-Active (cluster-active)
+- **Use cases**: Multi-site active-active deployments
+- **Traits**: Cross-datacenter cluster replication
+
+### Technical Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    RabbitMQ 集群架构                        │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────────────────────────────────────────────────┤
-│  │              RabbitMQ 节点集群                           │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
-│  │  │   RabbitMQ  │  │   RabbitMQ  │  │   RabbitMQ  │     │
-│  │  │   Node 1    │  │   Node 2    │  │   Node 3    │     │
-│  │  │             │  │             │  │             │     │
-│  │  │  ┌───────┐  │  │  ┌───────┐  │  │  ┌───────┐  │     │
-│  │  │  │Queue 1│  │  │  │Queue 2│  │  │  │Queue 3│  │     │
-│  │  │  │Mirror │  │  │  │Mirror │  │  │  │Mirror │  │     │
-│  │  │  └───────┘  │  │  └───────┘  │  │  └───────┘  │     │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘     │
-│  └─────────────────────────────────────────────────────────┤
-│                          │                                 │
-│  ┌─────────────────────────────────────────────────────────┤
-│  │              消息路由层                                │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
-│  │  │   Direct    │  │   Fanout    │  │    Topic    │     │
-│  │  │  Exchange   │  │  Exchange   │  │  Exchange   │     │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘     │
-│  └─────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌─────────────────────────────────────────────────────────┤
-│  │              RabbitMQ Operator                          │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
-│  │  │   Manager   │  │  Controller │  │   Webhook   │     │
-│  │  │             │  │             │  │             │     │
-│  │  └─────────────┘  └─────────────┘  └─────────────┘     │
-│  └─────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌─────────────────────────────────────────────────────────┤
-│  │              Kubernetes 资源                            │
-│  │  • StatefulSet (RabbitMQ 节点)                         │
-│  │  • Service (服务发现)                                  │
-│  │  • PersistentVolumeClaim (数据和日志持久化)            │
-│  │  • ConfigMap (配置管理)                                │
-│  │  • Secret (认证信息)                                   │
-│  │  • Job (初始化任务)                                    │
-│  └─────────────────────────────────────────────────────────┘
-└─────────────────────────────────────────────────────────────┘
++---------------------------------------------------------+
+|                   RabbitMQ Cluster                       |
++---------------------------------------------------------+
+|  +-----------+  +-----------+  +-----------+            |
+|  | RabbitMQ  |  | RabbitMQ  |  | RabbitMQ  |            |
+|  |  Node 1   |  |  Node 2   |  |  Node 3   |            |
+|  |           |  |           |  |           |            |
+|  | +-------+ |  | +-------+ |  | +-------+ |            |
+|  | |Queue 1| |  | |Queue 2| |  | |Queue 3| |            |
+|  | |Mirror | |  | |Mirror | |  | |Mirror | |            |
+|  | +-------+ |  | +-------+ |  | +-------+ |            |
+|  +-----------+  +-----------+  +-----------+            |
++---------------------------------------------------------+
+|                  Message Routing Layer                   |
+|  +-----------+  +-----------+  +-----------+            |
+|  |  Direct   |  |  Fanout   |  |  Topic    |            |
+|  | Exchange  |  | Exchange  |  | Exchange  |            |
+|  +-----------+  +-----------+  +-----------+            |
++---------------------------------------------------------+
+|                  RabbitMQ Operator                       |
+|  +-----------+  +-----------+  +-----------+            |
+|  |  Manager  |  |Controller |  |  Webhook  |            |
+|  +-----------+  +-----------+  +-----------+            |
++---------------------------------------------------------+
+|               Kubernetes Resources                      |
+|  StatefulSet | Service | PVC | ConfigMap | Secret | Job |
++---------------------------------------------------------+
 ```
 
-### 资源需求
+### Component Overview
 
-#### Operator 资源
-- **CPU 限制**: 500m
-- **内存限制**: 500Mi
-- **CPU 请求**: 100m
-- **内存请求**: 250Mi
+- **RabbitMQ**: Core message broker engine with management plugin
+- **RabbitMQ Operator**: Kubernetes operator for lifecycle management
+- **RabbitMQ Init**: Initialization container for cluster bootstrap
 
-#### RabbitMQ 节点资源（默认）
-- **CPU 限制**: 2 Core
-- **内存限制**: 4Gi
-- **CPU 请求**: 2 Core
-- **内存请求**: 4Gi
+## Prerequisites
 
-#### 存储需求
-- **数据卷**: 可配置大小
-- **日志卷**: 2Gi（固定）
-- **访问模式**: ReadWriteOnce
+- Kubernetes 1.26+
+- [OpenSaola Operator](https://github.com/harmonycloud/opensaola) deployed
+- [saola-cli](https://github.com/harmonycloud/saola-cli) installed
 
-## 使用建议
+## Quick Start
 
-### 环境选择
+```bash
+# Publish the package
+saola publish rabbitmq/
 
-#### 开发测试环境
-- 使用 **标准版** 基线
-- 单节点部署即可
-- 减少资源配置
-- 适合功能验证和开发测试
+# Install the operator
+saola operator create rmq-operator --type RabbitMQ --version 3.12.7
 
-#### 生产环境
-- 使用 **集群版** 基线
-- 至少 3 节点部署
-- 配置 Pod 反亲和性确保节点分散
-- 启用监控告警
-- 配置镜像队列
+# Create an instance
+saola middleware create my-rabbitmq --type RabbitMQ --version 3.12.7
 
-### 配置建议
-
-#### 资源规划
-```yaml
-# 生产环境推荐配置
-resources:
-  rabbitmq:
-    limits:
-      cpu: "4"
-      memory: "8Gi"
-    requests:
-      cpu: "2"
-      memory: "4Gi"
-    replicas: 3  # 至少3个节点
-    volume:
-      size: 100  # GB
-      storageClass: "fast-ssd"
+# Check status
+saola middleware get my-rabbitmq
 ```
 
-#### 存储配置
-- 使用 SSD 存储提升性能
-- 配置适当的存储类
-- 考虑数据增长预留空间
-- 建议每个节点至少 100GB 存储
+## Available Actions
 
-#### 网络配置
-- 配置服务发现
-- 设置适当的网络策略
-- 考虑跨可用区部署
-- 配置负载均衡
+| Action | Description |
+|--------|-------------|
+| restart | Restart the middleware instance |
 
-### 监控告警
+## Configuration
 
-#### 关键指标
-- **节点状态**: `rabbitmq_identity_info`
-- **队列消息**: `rabbitmq_queue_messages_ready`
-- **连接数**: `rabbitmq_connections`
-- **通道数**: `rabbitmq_channels`
-- **消息吞吐量**: 消息发送和消费速率
-- **磁盘使用**: 磁盘空间使用情况
+Key parameters can be customized via the baseline configuration. See `manifests/*parameters.yaml` for the full parameter reference:
 
-#### 告警规则
-- RabbitMQ Pod 不健康告警 (Warning)
-- 消息积压超过 100,000 条告警 (Warning)
+- `manifests/clusterparameters.yaml` -- Cluster mode parameters
+- `manifests/clusteractiveparameters.yaml` -- Active-active cluster parameters
 
-### 性能优化
+## Usage Guidance
 
-#### 队列配置
-- 合理设置队列长度限制
-- 配置消息 TTL
-- 启用消息持久化
-- 设置合适的预取数量
+### Environment Selection
 
-#### 交换机配置
-- 选择合适的交换机类型
-- 优化路由键设计
-- 避免过多的绑定关系
-- 使用死信队列处理失败消息
+#### Development and Test
+- **Recommended topology**: Operator Standard
+- **Resources**: CPU 2 cores, memory 4 Gi, storage 50 Gi
+- **Suggested version**: RabbitMQ 3.12.7
+- **Instances**: 1
 
-#### 集群优化
-- 配置镜像队列
-- 合理分配队列到不同节点
-- 监控集群负载均衡
-- 定期清理过期数据
+#### Production
+- **Recommended topology**: Cluster or Operator Highly Available
+- **Resources**: CPU 4 cores, memory 8 Gi, storage 100 Gi
+- **Suggested version**: RabbitMQ 3.12.7
+- **Instances**: 3+ for high availability
 
-### 安全配置
+### Best Practices
 
-#### 访问控制
-- 配置用户认证
-- 设置虚拟主机隔离
-- 配置细粒度权限
-- 定期更换密码
+#### Security
+- Configure user authentication and virtual host isolation
+- Enforce strong passwords with mixed character classes
+- Set fine-grained permissions per virtual host
+- Rotate credentials periodically
+- Enable TLS encryption for all connections
 
-#### 网络安全
-- 配置网络隔离
-- 限制访问来源
-- 使用 TLS 加密
-- 监控异常访问
+#### Performance Tuning
+- Set appropriate queue length limits
+- Configure message TTL for expiration
+- Enable message persistence for important queues
+- Tune prefetch counts for consumers
+- Choose the right exchange type for your routing pattern
 
-### 运维最佳实践
+#### Queue Management
+- Configure mirrored queues for critical workloads
+- Distribute queues across nodes for load balancing
+- Use dead-letter queues for failed message handling
+- Monitor cluster load balance metrics
+- Clean up expired data regularly
 
-#### 集群管理
-- 使用 Web 管理界面
-- 定期检查集群状态
-- 监控节点健康
-- 配置自动故障转移
+#### Monitoring and Alerting
+- Track node status, queue depth, and connection count
+- Monitor message throughput (publish and consume rates)
+- Define alert thresholds for message backlog
+- Watch disk usage and memory consumption
+- Review channel and connection metrics
 
-#### 数据管理
-- 定期备份配置
-- 监控存储使用情况
-- 清理过期消息
-- 制定数据恢复策略
+#### Producer Best Practices
+- Use connection pools for efficient resource usage
+- Implement retry mechanisms for publish failures
+- Handle publish confirmations properly
+- Monitor publish performance and latency
 
-#### 故障处理
-- 建立监控体系
-- 制定故障处理流程
-- 配置自动恢复
-- 定期演练恢复流程
+#### Consumer Best Practices
+- Implement idempotent consumption
+- Set appropriate concurrency levels
+- Handle consumption failures gracefully
+- Monitor consumption progress and lag
 
-### 扩展和升级
+## Related Projects
 
-#### 水平扩展
-- 动态添加节点
-- 重新分配队列
-- 监控扩展效果
-- 调整资源配置
+| Project | Description |
+|---------|-------------|
+| [OpenSaola Operator](https://github.com/harmonycloud/opensaola) | Core Kubernetes operator for middleware lifecycle management |
+| [saola-cli](https://github.com/harmonycloud/saola-cli) | Command-line tool for middleware management |
+| [PostgreSQL](https://github.com/harmonycloud/postgresql) | PostgreSQL database package |
+| [MySQL](https://github.com/harmonycloud/mysql) | MySQL database package |
+| [Kafka](https://github.com/harmonycloud/kafka) | Apache Kafka streaming platform package |
+| [Redis](https://github.com/harmonycloud/redis) | Redis in-memory data store package |
+| [Elasticsearch](https://github.com/harmonycloud/elasticsearch) | Elasticsearch search engine package |
+| [ZooKeeper](https://github.com/harmonycloud/zookeeper) | Apache ZooKeeper coordination service package |
 
-#### 版本升级
-- 制定升级计划
-- 测试环境验证
-- 滚动升级
-- 准备回滚方案
+## License
 
-### 集成建议
-
-#### 生产者最佳实践
-- 使用连接池
-- 实现重试机制
-- 处理发送失败
-- 监控发送性能
-
-#### 消费者最佳实践
-- 实现幂等消费
-- 合理设置并发度
-- 处理消费失败
-- 监控消费进度
-
-### 使用场景
-
-#### 典型应用
-- **异步处理**: 解耦系统组件
-- **任务队列**: 后台任务处理
-- **事件驱动**: 微服务间通信
-- **消息广播**: 通知推送
-- **负载均衡**: 请求分发
-- **数据同步**: 跨系统数据同步
-
-### 注意事项
-
-1. **集群规模**: 生产环境建议至少 3 个节点
-2. **镜像队列**: 重要队列建议配置镜像
-3. **消息持久化**: 重要消息必须持久化
-4. **监控覆盖**: 确保关键指标都有监控
-5. **备份策略**: 制定配置和数据备份策略
-6. **版本兼容**: 注意客户端与服务端版本兼容
-7. **资源规划**: 根据消息量合理规划资源
-8. **安全配置**: 生产环境必须配置认证
-9. **日志管理**: 配置日志轮转避免磁盘满
-10. **文档维护**: 及时更新配置文档
-
-通过遵循以上建议，可以确保 RabbitMQ 在生产环境中的稳定运行和最佳性能，为应用程序提供可靠的消息传递服务。
+This project is licensed under the [Apache License 2.0](LICENSE).
