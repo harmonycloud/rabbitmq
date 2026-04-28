@@ -23,7 +23,7 @@ spec:
         volume:
           size: '{"type":"int","label":"StorageSize","required":true,"pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
           storageClass: '{"type":"storageClass","label":"StorageClass","required":true,"description":"Please select storage","placeholder":"Please select storage"}'
-        replicas: '{"type":"int","label":"Replicas","required":true,"description":"Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7).","default":3,"pattern":"^([3579]|[1-9][0-9]*[13579])$","placeholder":"Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7)."}'
+        replicas: '{"type":"int","label":"Instances","required":true,"description":"Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7).","default":3,"pattern":"^([3579]|[1-9][0-9]*[13579])$","placeholder":"Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7)."}'
     version: '{"type":"version","label":"Version","required":true,"default":"3.12.7"}'
   preActions:
     - name: pre-rabbitmq-alertrule-labels
