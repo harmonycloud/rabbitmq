@@ -1,5 +1,5 @@
 name: RabbitMQ # 中间件类型
-version: 1.2.0-1.2.0 # 包版本
+version: 1.2.0-1.2.0-qishang-1.0.0 # 包版本
 app:
   version: # 中间件支持版本
     - "3.12.7"
@@ -9,3 +9,6 @@ owner: harmonycloud # 供应商
 type: mq # 类型
 chartType: RabbitMQ
 description: RabbitMQ 消息队列 # 描述
+changes: |
+  1.2.0-1.2.0-qishang-1.0.0
+    2026.05.28: 支持齐商双活可用区调度配置
