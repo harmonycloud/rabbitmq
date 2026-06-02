@@ -35,13 +35,22 @@ spec:
       exposed: true
     - name: pre-rabbitmq-affinity
       parameters:
-        podAntiAffinityTopologKey: "kubernetes.io/hostname"
-        podAntiAffinity: "soft"
+        podAntiAffinityTopologKey: "topology.kubernetes.io/zone"
+        podAntiAffinity: "hard"
+        disableHostnameTopologySpread: true
         nodeAffinity: { }
       exposed: true
     - name: pre-rabbitmq-tolerations
       parameters:
-        tolerations: [ ]
+        tolerations:
+          - effect: NoSchedule
+            key: harm.cn/type
+            operator: Equal
+            value: active-active
+          - effect: NoSchedule
+            key: skyview/nodepool-taint
+            operator: Equal
+            value: system
       exposed: true
   parameters:
     statefulsetComponent:
